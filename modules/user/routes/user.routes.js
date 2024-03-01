@@ -6,11 +6,14 @@ const {
   updateUser,
 } = require("../controller/user.controller");
 
+const validateRequest = require("../../../common/validateRequest");
+const { addUserSchema } = require("../joi/userValidation");
+
 const router = require("express").Router();
 
 router.get("/users", getAllUsers);
 router.get("/getUser/:id", getUser);
-router.post("/addNewUser", addNewUser);
+router.post("/addNewUser", validateRequest(addUserSchema), addNewUser);
 router.delete("/delete/:id", deleteUser);
 router.patch("/updateUser/:id", updateUser);
 

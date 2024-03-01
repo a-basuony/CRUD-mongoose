@@ -1,5 +1,6 @@
 const User = require("../schema/user.schema");
-// const User = require("../model/user.model");
+const { StatusCodes } = require("http-status-codes");
+const bcrypt = require("bcrypt");
 
 // get all users
 const getAllUsers = async (req, res) => {
@@ -28,22 +29,32 @@ const getUser = async (req, res) => {
 // add new user
 const addNewUser = async (req, res) => {
   const { name, email, password } = req.body;
-  const newUser = new User({ name, email, password });
+  // console.log("password before hashing : ", password);
   try {
+    // bcrypt.hash(password, 7, async function (err, hash) {
+    //   // 7  is the salt rounds عدد مرات التهيش
+    //   console.log("password  after hashing : ", hash);
+    //   if (err) throw err;
+    // const newUser = new User({ name, email, password: hash });
+    const newUser = new User({ name, email, password });
     await newUser.save();
-    res.json({ message: "User added successfully", data: newUser });
+    res
+      .status(StatusCodes.CREATED)
+      .json({ message: "User added successfully", data: newUser });
+    // });
   } catch (error) {
     res.json({ message: "Error in adding the user ", error });
   }
-
-  //******** another way to add a user *****/
-  // try {
-  //   const users = await User.insertMany({ name, email, password });
-  //   res.json({ message: "add new user success" });
-  // } catch (error) {
-  //   res.json({ message: "Error when adding a new user", ...error });
-  // }
 };
+
+//******** another way to add a user *****/
+// try {
+//   const users = await User.insertMany({ name, email, password });
+//   res.json({ message: "add new user success" });
+// } catch (error) {
+//   res.json({ message: "Error when adding a new user", ...error });
+// }
+// };
 
 //delete user
 const deleteUser = async (req, res) => {
